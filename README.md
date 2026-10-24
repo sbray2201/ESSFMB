@@ -1,10 +1,10 @@
 # ESSFMB — English Speaking Skills For My BuBu ❤️
 
-A personal, iPad-friendly English practice app for October 25–December 31, 2026. Built with React, TypeScript and Vite. It includes a 68-day topic curriculum, speaking/listening practice, vocabulary status cards, session checklist and timer, assessments, progress calendar, journal, and local JSON/CSV exports.
+A personal, iPad-friendly English practice app for October 25–December 31, 2026. Built with React, TypeScript and Vite. It includes a 68-day topic curriculum, speaking/listening practice, vocabulary status cards, a session checklist and timer, confidence checkpoints, a progress calendar, a journal, and local JSON/CSV exports.
 
 ## Run locally
 
-1. Install Node.js 20 or newer.
+1. Install Node.js 22.18 or newer.
 2. Unzip this project and open a terminal in the `essfmb` folder.
 3. Run `npm install`.
 4. Run `npm run dev` and open the local URL printed by Vite.
@@ -44,6 +44,8 @@ Speech synthesis and speech recognition depend on the iPad browser, installed vo
 
 ## Testing checklist
 
+Run `npm run check` for TypeScript validation without producing build output, and `npm test` for curriculum and backup validation checks.
+
 After `npm install`, run `npm run build` and fix any TypeScript/build errors before deployment. Then test:
 
 - The 68 dates from October 25 through December 31, 2026, and the checkpoint dates October 31, November 7/14/21/28, December 5/12/19/26 and December 31.
@@ -55,4 +57,10 @@ After `npm install`, run `npm run build` and fix any TypeScript/build errors bef
 - iPad portrait and landscape layouts, PWA installation and offline reload.
 - Netlify deep-link routing and access to historic lessons after December 31.
 
-The source archive was generated in this environment, but a production build and live Netlify deployment have **not** been verified here. Run the build and test checklist above before relying on it.
+## Restored application source
+
+The missing `src/` directory was rebuilt to restore the React entry point referenced by `index.html` and the inputs required by `tsconfig.app.json`. The app includes all 68 lesson dates and ten checkpoints. Checkpoints use self-reported confidence rather than automated pronunciation scoring.
+
+Finish practice to save the current timer, checklist, and confidence. Timer/checklist drafts reset when navigating to another lesson or leaving My day. Save practice notes to the journal before leaving a lesson. Journal edits and vocabulary changes save immediately in this browser. Marking a word as known removes it from the due-review filter; review dates are edited manually.
+
+TypeScript checks and automated curriculum/backup-validation checks passed during restoration. A local Netlify development smoke check verified the HTML, source modules, manifest, icon, and service worker. A production build was not run during restoration; Netlify validates it on deploy. Speech permissions, installation, and production offline caching still require testing on the target iPad.
