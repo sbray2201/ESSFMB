@@ -1,58 +1,41 @@
-# ESSFMB — English Speaking Skills For My BuBu ❤️
+# ESSFMB — English Speaking Skills For My BuBu
 
-A personal, iPad-friendly English practice app for October 25–December 31, 2026. Built with React, TypeScript and Vite. It includes a 68-day topic curriculum, speaking/listening practice, vocabulary status cards, session checklist and timer, assessments, progress calendar, journal, and local JSON/CSV exports.
+A personal, iPad-friendly English practice app for 25 October–31 December 2026, recreated with React, TypeScript and Vite after the original application source was missing from the repository.
 
-## Run locally
+The app includes a 68-day topic curriculum, ten checkpoint reflections, listening examples, browser speech recognition with typing fallback, vocabulary familiarity and favourites, review dates, a session checklist and timer, confidence ratings, a progress calendar, journal reflections, and JSON/CSV exports. Every lesson remains available after the programme ends. Programme dates use the Europe/Riga time zone.
 
-1. Install Node.js 20 or newer.
-2. Unzip this project and open a terminal in the `essfmb` folder.
-3. Run `npm install`.
-4. Run `npm run dev` and open the local URL printed by Vite.
-5. Before publishing, run `npm run build`. The production site is generated in `dist/`.
+## Development
 
-## Publish with GitHub and Netlify
+Use Node.js 22.12 or newer (Node 24 is supported).
 
-1. Create a new empty repository on GitHub, for example `essfmb-english-learning`.
-2. In this project folder, run:
+```sh
+npm ci
+netlify dev --port 8889
+```
 
-   ```bash
-   git init
-   git add .
-   git commit -m "Build ESSFMB English learning app"
-   git branch -M main
-   git remote add origin https://github.com/YOUR-USERNAME/essfmb-english-learning.git
-   git push -u origin main
-   ```
+Open http://localhost:8889. Netlify Dev runs the Vite frontend and the progress API together. Running Vite alone does not emulate the progress API.
 
-3. Sign in to Netlify, choose **Add new site → Import an existing project**, and connect the GitHub repository.
-4. Build command: `npm run build`. Publish directory: `dist`.
-5. Deploy. Netlify will redeploy when you push later changes to GitHub.
-6. Open the published URL on the iPad in Safari. Use **Share → Add to Home Screen** where available. The PWA manifest and service worker support installation/offline caching where the browser permits it.
+```sh
+npm run typecheck
+npm test
+```
 
-## Data and privacy
+Netlify uses `npm run build` and publishes `dist`, as configured in `netlify.toml`. The production command runs TypeScript checks and Vite. Application sources are in `src`, with the entry point at `src/main.tsx`. Keep the complete source directory in the repository.
 
-Learning data is stored in this browser's local storage. It is not synced between devices. Clearing browser/site data can remove progress, so use **Settings & Backup → Download full JSON backup** regularly. Importing a backup replaces current local records after confirmation. CSV export is provided for session records.
+## Progress and backups
 
-Speech synthesis and speech recognition depend on the iPad browser, installed voices and permissions. The app feature-detects speech recognition and allows typing when it is unavailable. A transcript is not a pronunciation score. The app does not continuously record or upload audio.
+Saved sessions and vocabulary are stored in Netlify Database. An HttpOnly, same-site browser cookie links a browser to its records; there are no accounts or automatic cross-device synchronisation. Clearing cookies loses that browser's link to its records. Export a JSON backup regularly and import it on another browser to transfer progress. Import replaces saved data after confirmation and validates the file before sending it to the server. Backups are limited to 500 KB.
 
-## Important implementation notes
+Select **Complete & save practice** to persist the timer, checklist, response, confidence rating and journal. Practice can be completed early or marked skipped. Leaving a lesson with unsaved changes prompts for confirmation. Word familiarity and favourites save when changed. Failed saves show an error and keep the current practice available for retry; initial loading failures block editing to avoid overwriting saved data.
 
-- Dates are represented as ISO calendar dates for the October 25–December 31 program and the current program date is read with the `Europe/Riga` time zone.
-- The app remains accessible after December 31 so historic lessons can still be reviewed.
-- The initial version uses local storage rather than cross-device sync or a backend.
-- `netlify.toml` configures the Vite build, single-page app routing, and basic security headers.
+The schema is in `db/schema.ts`, with generated migrations in `netlify/database/migrations`. Netlify applies migrations during deployment. Do not apply migrations manually. To add a future schema migration, edit the schema and run `npx drizzle-kit generate --name describe_the_change`.
 
-## Testing checklist
+## Speech and installation
 
-After `npm install`, run `npm run build` and fix any TypeScript/build errors before deployment. Then test:
+Listening uses browser speech synthesis. Recognition requires browser support and microphone permission; a text area is always available. Browser speech recognition may use the browser provider's processing service. This app saves transcripts, not audio. A transcript is not a pronunciation score.
 
-- The 68 dates from October 25 through December 31, 2026, and the checkpoint dates October 31, November 7/14/21/28, December 5/12/19/26 and December 31.
-- Start, pause/resume, activity completion, early completion and skip status.
-- Refreshing the browser and confirming local records persist.
-- JSON export/import and CSV export.
-- Vocabulary statuses, favourites, due dates and notebook search.
-- Speech synthesis, speech recognition where supported, and manual typing fallback.
-- iPad portrait and landscape layouts, PWA installation and offline reload.
-- Netlify deep-link routing and access to historic lessons after December 31.
+On iPad Safari, use **Share → Add to Home Screen**. The manifest and service worker provide an installable shell and cache previously loaded assets. Loading and saving progress require an internet connection. Google Fonts enhance typography; local serif and sans-serif fallbacks work if they cannot load.
 
-The source archive was generated in this environment, but a production build and live Netlify deployment have **not** been verified here. Run the build and test checklist above before relying on it.
+## Validation
+
+`npm run typecheck` checks the frontend, Vite configuration, database schema and server function without generating build artifacts. `npm test` checks all curriculum dates, assessment dates and valid/invalid backups. Full production builds and database migration application are performed by Netlify's deployment pipeline.
